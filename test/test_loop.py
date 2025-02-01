@@ -1,7 +1,9 @@
 from dataclasses import dataclass
-from unittest import IsolatedAsyncioTestCase
+from typing import Any
 
-from command_loopy import command as c, loop
+import pytest
+
+from command_loopy import command, loop
 
 
 @dataclass
@@ -27,9 +29,9 @@ class IncrementCounterCmd:
         return CounterUpdatedMsg(self.current + 1)
 
 
-class TestModel:
+class MockModel:
     """
-    A test model that keeps track of a counter.
+    A mock model that keeps track of a counter.
     This is not the class under test but supports the test.
     """
 
@@ -41,34 +43,35 @@ class TestModel:
     def init(self):
         return IncrementCounterCmd()
 
-    def update(self, msg):
+    def update(self, msg: Any):
         if isinstance(msg, CounterUpdatedMsg):
             self.count += msg.updated_count
 
         if self.count < self.max_count:
             return (self, IncrementCounterCmd())
         else:
-            return (self, c.Quit())
+            return (self, command.Quit())
 
     def view(self):
         self.display = f"count: {self.count}"
 
 
-class TestLoop(IsolatedAsyncioTestCase):
-    """
-    This is the actual test class.
-    """
+@pytest.fixture
+def loop_fixture():
+    return loop.Loop(command.NoOp(), 0)
 
-    def setUp(self) -> None:
-        self.loop = loop.Loop(c.NoOp(), 0)
-        return super().setUp()
 
-    async def test_loop_model(self):
-        mdl = TestModel(max_count=5)
-        await self.loop.run(mdl)
-        self.assertEqual(mdl.count, 5)
+@pytest.mark.asyncio
+async def test_loop_model(loop_fixture: loop.Loop):
+    COUNT = 5
+    mdl = MockModel(max_count=COUNT)
+    await loop_fixture.run(mdl)
+    assert mdl.count == COUNT
 
-    async def test_loop_view(self):
-        mdl = TestModel(max_count=5)
-        await self.loop.run(mdl)
-        self.assertEqual(mdl.display, "count: 5")
+
+@pytest.mark.asyncio
+async def test_loop_view(loop_fixture: loop.Loop):
+    COUNT = 5
+    mdl = MockModel(max_count=COUNT)
+    await loop_fixture.run(mdl)
+    assert mdl.display == f"count: {COUNT}"

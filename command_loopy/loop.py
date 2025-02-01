@@ -1,7 +1,7 @@
 import asyncio
 from typing import Tuple
 
-from . import command as c, protocol as p
+from . import command, protocol as p
 
 
 class Loop:
@@ -27,7 +27,7 @@ class Loop:
 
     def __must_quit(self, commands: list[p.Cmd]) -> bool:
         for cmd in commands:
-            if isinstance(cmd, c.Quit):
+            if isinstance(cmd, command.Quit):
                 return True
         return False
 
@@ -66,7 +66,7 @@ class Loop:
 
         commands: list[p.Cmd] = []
         init_cmd = model.init()
-        if init_cmd:
+        if init_cmd is not None:
             commands.append(init_cmd)
 
         while not self.__must_quit(commands):

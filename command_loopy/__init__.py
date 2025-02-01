@@ -1,6 +1,9 @@
-from . import command as c, loop
+from . import command, loop
 
-PassMsg = c.PassMsg
-NoOp = c.NoOp
-Quit = c.Quit
 Loop = loop.Loop
+
+NoOp = command.NoOp
+PassMsg = command.PassMsg
+Quit = command.Quit
+
+__all__ = ["Loop", "NoOp", "PassMsg", "Quit"]

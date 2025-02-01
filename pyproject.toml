@@ -1,15 +1,23 @@
-[tool.poetry]
+[project]
 name = "command-loopy"
 version = "0.0.0"
-description = ""
-authors = ["Michael Frayer <frayerm@gmail.com>"]
-license = "MIT"
+description = "A library for building command-line applications"
+authors = [
+    { name="Michael Frayer", email="frayerm@gmail.com" }
+]
 readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "asyncio>=3.4.3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.3",
+]
 
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[project.scripts]
+passphrase = "command_loopy:main"
