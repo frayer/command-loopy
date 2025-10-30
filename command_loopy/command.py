@@ -21,7 +21,7 @@ class PassMsg:
     def __init__(self, msg: p.Msg):
         self.msg = msg
 
-    async def exec(self):
+    async def exec(self) -> p.Msg:
         return self.msg
 
 

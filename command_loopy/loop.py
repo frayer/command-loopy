@@ -21,7 +21,7 @@ class Loop:
         self.task_timeout = task_timeout
         self.__tasks: set[asyncio.Task[p.Msg]] = set()
 
-    def __shutdown(self):
+    def __shutdown(self) -> None:
         for t in self.__tasks:
             t.cancel()
 
@@ -31,7 +31,7 @@ class Loop:
                 return True
         return False
 
-    def __queue_tasks(self, commands: list[p.Cmd]):
+    def __queue_tasks(self, commands: list[p.Cmd]) -> None:
         for cmd in commands:
             task = asyncio.create_task(cmd.exec())
             self.__tasks.add(task)
@@ -55,7 +55,7 @@ class Loop:
 
         return next_model, next_commands
 
-    async def run(self, model: p.Model):
+    async def run(self, model: p.Model) -> None:
         """
         Run the loop for the given model.
 
